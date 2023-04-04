@@ -8,7 +8,7 @@ function Game() {
 
   //Declaring a Winner
   useEffect(() => {
-    const winner = calculateWinner(squares)
+    const winner = calculateWinner(squares);
     setWinner(winner);
   }, [squares]);
 
@@ -39,9 +39,13 @@ function Game() {
     return null;
   };
 
+  const isBoardFull = (squares) => {
+    return squares.every((square) => square !== null);
+  };
+
   //Handle player
   const handleClick = (i) => {
-    if (winner || squares[i]) {
+    if (winner || squares[i] || isBoardFull(squares)) {
       return;
     }
     const newSquares = squares.slice();
@@ -54,14 +58,20 @@ function Game() {
   const handlRestart = () => {
     setSquares(Array(9).fill(null));
     setXIsNext(true);
-    setWinner(null)
+    setWinner(null);
   };
 
   return (
     <div className="main">
       <h2 className="result">Winner is: {winner ? winner : "N/N"}</h2>
       <div className="game">
-        <span className="player">Next player is: {xIsNext ? "X" : "O"}</span>
+        <span className="player">
+          {winner
+            ? `Game Over. Winner: ${winner}`
+            : isBoardFull(squares)
+            ? "Game Over. It's a draw!"
+            : `Next player is: ${xIsNext ? "X" : "O"}`}
+        </span>
         <Board squares={squares} handleClick={handleClick} />
       </div>
       <button onClick={handlRestart} className="restart-btn">
